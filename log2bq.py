@@ -1,4 +1,4 @@
-from taskController2 import ExternalTaskController, TaskController
+from taskController import ExternalTaskController, TaskController
 import json
 from datetime import timedelta, datetime
 import luigi

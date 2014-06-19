@@ -63,6 +63,8 @@ class Gs2BqTask(TaskController):
         return args
         
 
+
+
 class GenReport(TaskController):
     date = luigi.DateParameter(default=datetime(2014,06,19))
 

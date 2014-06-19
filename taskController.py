@@ -101,8 +101,12 @@ class TaskController(luigi.Task):
         while True:
             try:
                 result = urllib2.urlopen(check_status_api + "?id=" + task_id ).read()
-                if json.loads(result)['status'] == 'done':
+                status = json.loads(result)['status'].lower()
+                if status == 'done':
                     break
+                elif status == "failed":
+                    raise Exception('failed')
+
                 logger.info('watting {}'.format(task_id))
 
             except urllib2.URLError, e:
@@ -136,7 +140,7 @@ class TaskController(luigi.Task):
 
 
     def __write_output(self, result):
-        output_file = self.output.open('w')
+        output_file = self.output().open('w')
         output_file.write(json.dumps(result))
 
 

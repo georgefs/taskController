@@ -47,6 +47,7 @@ class Gs2BqTask(TaskController):
         'bqdataset': 'tagtootest',
         'table': 'test_table',
         'fields': [{'type': 'string', 'name': 'features', 'mode': 'repeated'}, {'type': 'string', 'name': 'vars', 'mode': 'repeated'}, {'type': 'string', 'name': 'ip'}, {'type': 'string', 'name': 'session'}, {'type': 'string', 'name': 'slot'}, {'type': 'string', 'name': 'title'}, {'type': 'string', 'name': 'creative'}, {'type': 'string', 'name': 'pc'}, {'type': 'string', 'name': 'version'}, {'type': 'string', 'name': 'type'}, {'type': 'string', 'name': 'publisher'}, {'type': 'timestamp', 'name': 'start_time'}, {'type': 'string', 'name': 'host'}, {'type': 'string', 'name': 'user'}, {'type': 'string', 'name': 'qp'}, {'type': 'string', 'name': 'target'}, {'fields': [{'type': 'string', 'name': 'var'}, {'type': 'string', 'name': 'advertiser'}, {'type': 'string', 'name': 'campaign'}], 'type': 'record', 'name': 'items', 'mode': 'repeated'}, {'type': 'string', 'name': 'ext'}, {'type': 'string', 'name': 'tag'}, {'type': 'string', 'name': 'user_agent'}, {'type': 'string', 'name': 'referral'}, {'type': 'string', 'name': 'qm'}, {'type': 'string', 'name': 'page'}]
+        'overwrite': False,
     }
 
     output_format = "{0.__class__.__name__}_{0.hour_time:%Y-%m-%d_%H}"
@@ -78,6 +79,6 @@ class GenReport(TaskController):
         args['kwargs']['date'] = date
         return args
     
-    
+
 import luigi
 luigi.run(main_task_cls=Gs2BqTask) 

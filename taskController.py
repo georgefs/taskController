@@ -25,7 +25,7 @@ class TaskController(luigi.Task):
 
     _retry = 0 #retry times 
     _timeout = 0 # time out for sec 0 for unlimit
-    
+     
     output_format = "{0.__class__.__name__}"
 
     def requires(self):
@@ -45,13 +45,12 @@ class TaskController(luigi.Task):
             try:
                 result = self.__watting_task(task_id)
             except Exception as e:
-                self.__retry_task(task_id)
+                self.__retry_task(args, task_id)
             finally:
                 logger.info('retry {}'.format(retry_count))
                 if self._retry and retry_count >= self._retry:
                     logger.error('maxmun retry')
                     raise Exception('maxmun retry')
-
         self.__write_output(result)
 
 
@@ -101,9 +100,10 @@ class TaskController(luigi.Task):
         while True:
             try:
                 result = urllib2.urlopen(check_status_api + "?id=" + task_id ).read()
-                status = json.loads(result)['status'].lower()
+                result = json.loads(result)
+                status = result['status'].lower()
                 if status == 'done':
-                    break
+                    return result
                 elif status == "failed":
                     raise Exception('failed')
 
@@ -133,15 +133,16 @@ class TaskController(luigi.Task):
 
 
     ## retry task
-    def __retry_task(self, task_id):
+    def __retry_task(self, args, task_id):
         logger.info('retry')
         self.__stop_task(task_id)
-        self.__start_task()
+        self.__start_task(args)
 
 
     def __write_output(self, result):
         output_file = self.output().open('w')
         output_file.write(json.dumps(result))
+        output_file.close()
 
 
 

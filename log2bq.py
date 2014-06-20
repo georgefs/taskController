@@ -70,7 +70,7 @@ class GenReport(TaskController):
     output_format = "{0.__class__.__name__}_{0.date:%Y-%m-%d}"
 
     def requires(self):
-        return [Gs2BqTask(self.date + timedelta(hours=i)) for i in xrange(24)]
+        return [Gs2BqTask(datetime(self.day.year, self.day.month, self.day.day) + timedelta(hours=i)) for i in xrange(24)]
     
     def prepare_args(self, inputs):
         date = date.strftime('%Y-%m-%d')

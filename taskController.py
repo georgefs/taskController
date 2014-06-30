@@ -12,6 +12,8 @@ TRIGGER = "/_task/trigger"
 STATUS = "/_task/status"
 STOP = "/_task/stop"
 
+PATH = "/srv/luigi/"
+
 
 # task server 端
 class TaskController(luigi.Task):
@@ -33,7 +35,7 @@ class TaskController(luigi.Task):
 
     def output(self):
         name = self.output_format.format(self)
-        return luigi.LocalTarget(name)
+        return luigi.LocalTarget(PATH + name)
 
     def run(self):
         inputs = self.__read_input()

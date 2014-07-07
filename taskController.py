@@ -11,6 +11,7 @@ logger = logging.getLogger('luigi-interface')
 TRIGGER = "/_task/trigger"
 STATUS = "/_task/status"
 STOP = "/_task/stop"
+LOGIN = "/_task/login"
 
 PATH = "/srv/luigi/"
 
@@ -29,6 +30,7 @@ class TaskController(luigi.Task):
     _timeout = 0 # time out for sec 0 for unlimit
      
     output_format = "{0.__class__.__name__}"
+    key = "tagtoocusps"
 
     def requires(self):
         return []
@@ -38,6 +40,7 @@ class TaskController(luigi.Task):
         return luigi.LocalTarget(PATH + name)
 
     def run(self):
+        self.login()
         inputs = self.__read_input()
 
         args = self.prepare_args(inputs)
@@ -79,7 +82,7 @@ class TaskController(luigi.Task):
     
     ## trigger task
     def __start_task(self, args):
-        trigger_api = urlparse.urljoin(self._task_url, TRIGGER)
+        trigger_api = urlparse.urljoin(self._task_url, TRIGGER) + "?token=" + self.token
         
         args['args'] = json.dumps(args['args'])
         args['kwargs'] = json.dumps(args['kwargs'])
@@ -101,7 +104,7 @@ class TaskController(luigi.Task):
 
         while True:
             try:
-                result = urllib2.urlopen(check_status_api + "?id=" + task_id ).read()
+                result = urllib2.urlopen(check_status_api + "?id=" + task_id + "&token=" + self.token ).read()
                 result = json.loads(result)
                 status = result['status'].lower()
                 if status == 'done':
@@ -131,7 +134,7 @@ class TaskController(luigi.Task):
     ## stop task
     def __stop_task(self, task_id):
         stop_api = urlparse.urljoin(self._task_url, STOP)
-        urllib2.urlopen(stop_api + "?id="+task_id).read()
+        urllib2.urlopen(stop_api + "?id="+task_id+"&token="+self.token).read()
 
 
     ## retry task
@@ -147,6 +150,14 @@ class TaskController(luigi.Task):
         output_file.close()
 
 
+    def login(self):
+        try:
+            info = urllib2.urlopen(urlparse.urljoin(self._task_url, LOGIN) + "?key=" + self.key).read()
+            info = json.loads(info)
+            self.token = info.get('token')
+            return self.token
+        except Exception as e:
+            import pdb;pdb.set_trace()
 
 
         

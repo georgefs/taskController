@@ -10,7 +10,7 @@ gs_name_format = "logs-{:%Y%m%d}"
 class Log2GsTask(TaskController):
 
     _task_path = 'share_libs.pipelines.Log2Gs'
-    _task_url = 'http://2.tagtootrack.appspot.com/'
+    _task_url = 'http://client-auth.tagtootrack.appspot.com/'
     _kwargs = {
         'mapper': 'main.log2json',
         'start_time': 0,  #total seconds
@@ -42,7 +42,7 @@ class Log2BqTask(TaskController):
 
     hour_time = luigi.DateHourParameter()
     _task_path = 'share_libs.pipelines.Gs2Bq'
-    _task_url = 'http://2.tagtootrack.appspot.com/'
+    _task_url = 'http://client-auth.tagtootrack.appspot.com/'
     _kwargs = {
         #'files': ["/gs/tagtootest/test-1577677112291931E7B4A-output"],  save to bigquery file
         'bqproject': '103827621493',
@@ -69,6 +69,7 @@ class Log2BqTask(TaskController):
 
 class Log2GenReport(TaskController):
     date = luigi.DateParameter()
+    _task_url = 'http://client-auth.tagtootrack.appspot.com/'
 
     output_format = "{0.__class__.__name__}_{0.date:%Y-%m-%d}"
 
@@ -90,7 +91,7 @@ class Log2GenReport(TaskController):
 class ReLoadBq(TaskController):
     date = luigi.DateParameter()
     _task_path = 'share_libs.pipelines.Gs2Bq'
-    _task_url = 'http://2.tagtootrack.appspot.com/'
+    _task_url = 'http://client-auth.tagtootrack.appspot.com/'
     _kwargs = {
         #'files': ["/gs/tagtootest/test-1577677112291931E7B4A-output"],  save to bigquery file
         'bqproject': '103827621493',
